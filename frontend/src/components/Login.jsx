@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Login.css';
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 const Login = ({ onLoginSuccess }) => {
   const [step, setStep] = useState('email'); 
   const [email, setEmail] = useState('');
@@ -24,7 +26,7 @@ const Login = ({ onLoginSuccess }) => {
     setError(null);
     setSuccess(null);
     try {
-      const checkResponse = await axios.post('http://localhost:5000/api/auth/check-email', {
+      const checkResponse = await axios.post(`${API_BASE_URL}/auth/check-email`, {
         email
       });
       if (checkResponse.data.verified) {
@@ -34,7 +36,7 @@ const Login = ({ onLoginSuccess }) => {
         onLoginSuccess(token, user);
       } else {
         setIsNewUser(true);
-        const otpResponse = await axios.post('http://localhost:5000/api/auth/request-otp', {
+        const otpResponse = await axios.post(`${API_BASE_URL}/auth/request-otp`, {
           email,
           name: name || undefined
         });
@@ -52,7 +54,7 @@ const Login = ({ onLoginSuccess }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/verify-otp', {
+      const response = await axios.post(`${API_BASE_URL}/auth/verify-otp`, {
         email,
         otp
       });
