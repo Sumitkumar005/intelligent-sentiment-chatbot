@@ -14,6 +14,13 @@ class EmailService:
         self.is_development = os.getenv('FLASK_ENV') == 'development'
     def send_otp_email(self, to_email: str, otp: str, name: str = None) -> bool:
         try:
+            logger.info(f"📧 Attempting to send OTP email to {to_email}")
+            logger.info(f"SMTP Config: host={self.smtp_host}, port={self.smtp_port}, user={self.smtp_user}, sender={self.email_sender}")
+            
+            if not self.smtp_user or not self.smtp_pass:
+                logger.error("❌ SMTP credentials not configured!")
+                return False
+            
             msg = MIMEMultipart('alternative')
             msg['Subject'] = 'Your Sentiment Chatbot Login Code'
             msg['From'] = self.email_sender
@@ -24,24 +31,29 @@ class EmailService:
             part2 = MIMEText(html_body, 'html')
             msg.attach(part1)
             msg.attach(part2)
-            if self.smtp_user and self.smtp_pass:
-                with smtplib.SMTP(self.smtp_host, self.smtp_port) as server:
-                    server.starttls()
-                    server.login(self.smtp_user, self.smtp_pass)
-                    server.send_message(msg)
+            
+            logger.info(f"📧 Connecting to SMTP server...")
+            with smtplib.SMTP(self.smtp_host, self.smtp_port, timeout=30) as server:
+                server.set_debuglevel(1)  # Enable debug output
+                logger.info(f"📧 Starting TLS...")
+                server.starttls()
+                logger.info(f"📧 Logging in...")
+                server.login(self.smtp_user, self.smtp_pass)
+                logger.info(f"📧 Sending message...")
+                server.send_message(msg)
                 logger.info(f"✅ OTP email sent successfully to {to_email}")
                 return True
-            else:
-                logger.warning(f"⚠️ SMTP credentials not configured. Email not sent to {to_email}")
-                if self.is_development:
-                    logger.info("📧 Development mode: Skipping email send")
-                    return True
-                return False
+                
+        except smtplib.SMTPAuthenticationError as e:
+            logger.error(f"❌ SMTP Authentication failed: {e}")
+            return False
+        except smtplib.SMTPException as e:
+            logger.error(f"❌ SMTP error: {e}")
+            return False
         except Exception as e:
             logger.error(f"❌ Failed to send email to {to_email}: {e}")
-            if self.is_development:
-                logger.info("📧 Development mode: Returning success despite error")
-                return True
+            import traceback
+            logger.error(traceback.format_exc())
             return False
     def _create_text_body(self, otp: str, name: str = None) -> str:
         greeting = f"Hello {name}!" if name else "Hello!"
