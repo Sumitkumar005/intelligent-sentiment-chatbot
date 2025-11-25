@@ -24,6 +24,12 @@ body {
   padding-right: env(safe-area-inset-right);
 }
 
+#root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
 /* Prevent zoom on input focus on iOS */
 @media (max-width: 768px) {
   input,
