@@ -1,0 +1,119 @@
+.conversation-summary {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 20px;
+  padding: 20px;
+  margin: 20px 0;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  position: relative;
+  z-index: 4;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 0.5);
+}
+.conversation-summary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-radius: 20px 20px 0 0;
+  pointer-events: none;
+}
+.summary-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+  color: #1a1a1a;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+  position: relative;
+  z-index: 1;
+}
+.summary-overall {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.summary-label {
+  font-weight: 600;
+  color: #2a2a2a;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+  position: relative;
+  z-index: 1;
+}
+.summary-explanation {
+  color: #3a3a3a;
+  font-size: 0.9rem;
+  margin: 12px 0;
+  line-height: 1.5;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+  position: relative;
+  z-index: 1;
+}
+.summary-distribution {
+  margin-top: 20px;
+}
+.distribution-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+  color: #495057;
+}
+.distribution-item {
+  margin-bottom: 16px;
+}
+.distribution-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  color: #495057;
+}
+.distribution-icon {
+  font-size: 1.2rem;
+}
+.distribution-count {
+  margin-left: auto;
+  font-weight: 500;
+  color: #212529;
+}
+.distribution-bar {
+  height: 8px;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.distribution-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+  border-radius: 4px;
+}
+.distribution-fill-positive {
+  background-color: #28a745;
+}
+.distribution-fill-neutral {
+  background-color: #6c757d;
+}
+.distribution-fill-negative {
+  background-color: #dc3545;
+}
+@media (max-width: 768px) {
+  .conversation-summary {
+    padding: 16px;
+  }
+  .summary-title {
+    font-size: 1.1rem;
+  }
+  .distribution-label {
+    font-size: 0.85rem;
+  }
+}

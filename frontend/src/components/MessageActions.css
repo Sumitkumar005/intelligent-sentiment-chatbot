@@ -1,0 +1,53 @@
+.message-actions-container {
+  position: absolute;
+  top: -12px;
+  right: 10px;
+  z-index: 10;
+}
+.message-user .message-actions-container {
+  right: auto;
+  left: 10px;
+}
+.message-actions {
+  display: flex;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 4px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: fadeInActions 0.2s ease;
+}
+@keyframes fadeInActions {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.action-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+.action-btn:hover {
+  background: rgba(102, 126, 234, 0.1);
+  transform: scale(1.1);
+}
+.copy-btn.copied {
+  color: #28a745;
+}
+.delete-btn:hover {
+  background: rgba(220, 53, 69, 0.1);
+}
