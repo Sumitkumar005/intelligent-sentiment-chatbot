@@ -3,16 +3,17 @@ from datetime import datetime
 from typing import Optional
 from models.User import User
 import os
+from db_adapter import DatabaseAdapter
 class UserDatabaseManager:
     def __init__(self, db_path: str = None):
+        self.adapter = DatabaseAdapter()
         if db_path is None:
             db_path = os.getenv('DATABASE_PATH', './chatbot.db')
         self.db_path = db_path
         self.init_user_tables()
+    
     def get_connection(self):
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
-        return conn
+        return self.adapter.get_connection()
     def init_user_tables(self):
         conn = self.get_connection()
         cursor = conn.cursor()
