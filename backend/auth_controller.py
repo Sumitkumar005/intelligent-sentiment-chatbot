@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from flask import jsonify
 import jwt
 import logging
+from threading import Thread
 from models.User import User
 from user_database import UserDatabaseManager
 from email_service import EmailService
@@ -67,10 +68,17 @@ def request_otp(data: dict):
             user_db.create_user(user)
         
         # Log OTP in development mode
-        if os.getenv('FLASK_ENV') == 'development':
-            print(f"🔐 OTP for {email}: {otp}")
+        print(f"🔐 OTP for {email}: {otp}")
         
-        email_sent = email_service.send_otp_email(email, otp, name)
+        # Send email in background thread to avoid blocking
+        def send_email_async():
+            try:
+                email_service.send_otp_email(email, otp, name)
+            except Exception as e:
+                logger.error(f"Failed to send email in background: {e}")
+        
+        Thread(target=send_email_async, daemon=True).start()
+        
         response_data = {
             'success': True,
             'message': 'OTP sent to your email address'
