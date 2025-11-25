@@ -10,8 +10,10 @@ try:
     import psycopg2
     import psycopg2.extras
     POSTGRES_AVAILABLE = True
-except ImportError:
+except ImportError as e:
     POSTGRES_AVAILABLE = False
+    import logging
+    logging.warning(f"psycopg2 not available: {e}. PostgreSQL support disabled.")
 
 
 class DatabaseAdapter:
@@ -21,8 +23,12 @@ class DatabaseAdapter:
         self.database_url = os.getenv('DATABASE_URL')
         self.is_postgres = self.database_url and self.database_url.startswith('postgresql')
         
+        # Only check for psycopg2 if we actually need to use PostgreSQL
         if self.is_postgres and not POSTGRES_AVAILABLE:
-            raise ImportError("psycopg2 is required for PostgreSQL. Install with: pip install psycopg2-binary")
+            # Log warning but don't fail - will fail later when trying to connect
+            import logging
+            logging.warning("PostgreSQL URL detected but psycopg2 not available. Falling back to SQLite.")
+            self.is_postgres = False
     
     def get_connection(self):
         """Get database connection"""
