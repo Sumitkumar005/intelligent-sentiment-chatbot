@@ -17,3 +17,19 @@
   background: rgba(255, 255, 255, 0.3);
   transform: scale(1.1);
 }
+@media 
+(max-width: 768px) {
+  .sound-toggle {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .sound-toggle {
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+  }
+}

@@ -70,6 +70,10 @@ function App() {
   };
   const handleSelectConversation = (id) => {
     setConversationId(id);
+    // Close sidebar on mobile after selecting conversation
+    if (window.innerWidth <= 768) {
+      setShowSidebar(false);
+    }
   };
   const handleDeleteConversation = async (deletedId) => {
     if (deletedId === conversationId) {
@@ -109,12 +113,18 @@ function App() {
   return (
     <div className={`app ${isDarkMode ? 'dark-mode' : ''}`}>
       {showSidebar && (
-        <ConversationList
-          currentConversationId={conversationId}
-          onSelectConversation={handleSelectConversation}
-          onNewConversation={handleNewConversation}
-          onDeleteConversation={handleDeleteConversation}
-        />
+        <>
+          <div 
+            className={`sidebar-overlay ${showSidebar ? 'active' : ''}`}
+            onClick={toggleSidebar}
+          />
+          <ConversationList
+            currentConversationId={conversationId}
+            onSelectConversation={handleSelectConversation}
+            onNewConversation={handleNewConversation}
+            onDeleteConversation={handleDeleteConversation}
+          />
+        </>
       )}
       <ChatInterface 
         key={conversationId} 

@@ -69,3 +69,44 @@
   background: rgba(102, 126, 234, 0.2);
   transform: scale(1.1);
 }
+
+
+@media (max-width: 768px) {
+  .emoji-reactions-container {
+    bottom: -14px;
+  }
+  .selected-reaction {
+    width: 28px;
+    height: 28px;
+    font-size: 1.1rem;
+  }
+  .emoji-reactions-picker {
+    gap: 4px;
+    padding: 4px;
+  }
+  .reaction-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .emoji-reactions-container {
+    bottom: -12px;
+  }
+  .selected-reaction {
+    width: 26px;
+    height: 26px;
+    font-size: 1rem;
+  }
+  .emoji-reactions-picker {
+    gap: 3px;
+    padding: 3px;
+  }
+  .reaction-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 1.1rem;
+  }
+}

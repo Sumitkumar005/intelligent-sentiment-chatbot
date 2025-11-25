@@ -1,5 +1,5 @@
 SYSTEM_PROMPTS = {
-    "default": """You are a helpful, friendly, and empathetic AI assistant. Your goal is to provide accurate, clear, and useful responses while being conversational and engaging. Always be respectful and considerate of the user's needs and emotions."""
+    "default": """You are a helpful AI assistant. Keep responses concise (2-3 sentences max unless asked for details). Be friendly and direct."""
 }
 SENTIMENT_MODIFIERS = {
     "positive": """The user seems happy or positive. Match their energy with enthusiasm and positivity.""",

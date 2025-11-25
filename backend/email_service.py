@@ -67,7 +67,7 @@ class EmailService:
             return False
     
     def _create_text_body(self, otp: str, name: str = None) -> str:
-        greeting = f"Hello {name}!" if name else "Hello!"
+        greeting = f"Hello {name}!" if (name and name.strip()) else "Hello!"
         return f"""
 {greeting}
 
@@ -84,7 +84,7 @@ Sentiment Chatbot Team
 """
     
     def _create_html_body(self, otp: str, name: str = None) -> str:
-        greeting = f"Hello {name}!" if name else "Hello!"
+        greeting = f"Hello {name}!" if (name and name.strip()) else "Hello!"
         return f"""
 <!DOCTYPE html>
 <html>

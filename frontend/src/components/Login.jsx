@@ -37,8 +37,7 @@ const Login = ({ onLoginSuccess }) => {
       } else {
         setIsNewUser(true);
         const otpResponse = await axios.post(`${API_BASE_URL}/auth/request-otp`, {
-          email,
-          name: name || undefined
+          email
         });
         setSuccess(otpResponse.data.message);
         setStep('otp');

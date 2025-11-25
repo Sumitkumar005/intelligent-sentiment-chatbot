@@ -103,3 +103,43 @@
     gap: 8px;
   }
 }
+
+@med
+ia (max-width: 480px) {
+  .conversation-stats {
+    padding: 16px;
+    margin: 16px 0;
+    border-radius: 16px;
+  }
+  .stats-title {
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+  }
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .stat-card {
+    padding: 12px;
+  }
+  .stat-value {
+    font-size: 1.6rem;
+  }
+  .stat-label {
+    font-size: 0.75rem;
+  }
+  .sentiment-stats h4 {
+    font-size: 1rem;
+    margin-bottom: 12px;
+  }
+  .sentiment-bar-item {
+    grid-template-columns: 70px 1fr 28px;
+    gap: 6px;
+  }
+  .sentiment-bar-label {
+    font-size: 0.8rem;
+  }
+  .sentiment-bar-count {
+    font-size: 0.8rem;
+  }
+}

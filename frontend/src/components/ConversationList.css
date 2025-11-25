@@ -212,13 +212,56 @@
 }
 @media (max-width: 768px) {
   .conversation-list {
-    width: 100%;
-    height: auto;
-    max-height: 40vh;
-    border-right: none;
-    border-bottom: 1px solid #dee2e6;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    z-index: 1000;
+    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.2);
+  }
+  .conversation-list-header {
+    padding: 14px;
+  }
+  .conversation-list-header h3 {
+    font-size: 1rem;
+  }
+  .new-conversation-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 1.1rem;
+  }
+  .conversation-item {
+    padding: 10px;
+  }
+  .conversation-title {
+    font-size: 0.85rem;
   }
   .delete-conversation-btn {
     opacity: 1;
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .conversation-list {
+    width: 260px;
+  }
+  .conversation-list-header {
+    padding: 12px;
+  }
+  .conversation-item {
+    padding: 8px;
+  }
+  .conversation-emoji {
+    font-size: 1.3rem;
+  }
+  .conversation-title {
+    font-size: 0.8rem;
+  }
+  .conversation-date {
+    font-size: 0.7rem;
   }
 }

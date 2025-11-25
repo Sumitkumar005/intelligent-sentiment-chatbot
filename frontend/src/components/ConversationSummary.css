@@ -109,11 +109,38 @@
 @media (max-width: 768px) {
   .conversation-summary {
     padding: 16px;
+    margin: 16px 0;
   }
   .summary-title {
     font-size: 1.1rem;
   }
+  .summary-explanation {
+    font-size: 0.85rem;
+  }
   .distribution-label {
     font-size: 0.85rem;
+  }
+  .distribution-icon {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .conversation-summary {
+    padding: 12px;
+    margin: 12px 0;
+    border-radius: 16px;
+  }
+  .summary-title {
+    font-size: 1rem;
+  }
+  .summary-explanation {
+    font-size: 0.8rem;
+  }
+  .distribution-title {
+    font-size: 0.9rem;
+  }
+  .distribution-label {
+    font-size: 0.8rem;
   }
 }

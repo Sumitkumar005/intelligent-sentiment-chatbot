@@ -132,5 +132,34 @@
 @media (max-width: 768px) {
   .message-content {
     max-width: 85%;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+  }
+  .message-header {
+    font-size: 0.7rem;
+  }
+  .message-timestamp {
+    font-size: 0.65rem;
+  }
+  .sentiment-emoji {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .message-content {
+    max-width: 90%;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+  }
+  .message-header {
+    font-size: 0.65rem;
+    margin-bottom: 4px;
+  }
+  .message-text {
+    line-height: 1.5;
+  }
+  .sentiment-emoji {
+    font-size: 1rem;
   }
 }

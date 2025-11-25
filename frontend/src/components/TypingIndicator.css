@@ -40,3 +40,32 @@
     transform: translateY(-10px);
   }
 }
+@me
+dia (max-width: 768px) {
+  .typing-indicator {
+    padding: 10px 14px !important;
+    min-width: 100px;
+  }
+  .typing-dots .dot {
+    width: 7px;
+    height: 7px;
+  }
+  .typing-text {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .typing-indicator {
+    padding: 8px 12px !important;
+    min-width: 90px;
+  }
+  .typing-dots .dot {
+    width: 6px;
+    height: 6px;
+    gap: 4px;
+  }
+  .typing-text {
+    font-size: 0.75rem;
+  }
+}

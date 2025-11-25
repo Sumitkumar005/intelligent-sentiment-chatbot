@@ -30,3 +30,23 @@
   color: #383d41;
   border: 1px solid #d6d8db;
 }
+@medi
+a (max-width: 768px) {
+  .sentiment-badge {
+    padding: 3px 6px;
+    font-size: 0.7rem;
+  }
+  .sentiment-icon {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .sentiment-badge {
+    padding: 2px 5px;
+    font-size: 0.65rem;
+  }
+  .sentiment-icon {
+    font-size: 0.85rem;
+  }
+}

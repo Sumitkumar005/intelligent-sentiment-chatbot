@@ -81,3 +81,45 @@
   color: #667eea;
   font-weight: bold;
 }
+@m
+edia (max-width: 768px) {
+  .language-btn {
+    width: 32px;
+    height: 32px;
+  }
+  .lang-flag {
+    font-size: 1.1rem;
+  }
+  .language-dropdown {
+    top: 42px;
+    min-width: 160px;
+  }
+  .language-option {
+    padding: 8px 10px;
+  }
+  .lang-name {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .language-btn {
+    width: 28px;
+    height: 28px;
+  }
+  .lang-flag {
+    font-size: 1rem;
+  }
+  .language-dropdown {
+    top: 38px;
+    min-width: 140px;
+    right: -10px;
+  }
+  .language-option {
+    padding: 6px 8px;
+    gap: 8px;
+  }
+  .lang-name {
+    font-size: 0.8rem;
+  }
+}

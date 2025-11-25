@@ -51,3 +51,33 @@
 .delete-btn:hover {
   background: rgba(220, 53, 69, 0.1);
 }
+@med
+ia (max-width: 768px) {
+  .message-actions-container {
+    top: -10px;
+  }
+  .message-actions {
+    padding: 3px;
+    gap: 4px;
+  }
+  .action-btn {
+    width: 26px;
+    height: 26px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .message-actions-container {
+    top: -8px;
+  }
+  .message-actions {
+    padding: 2px;
+    gap: 3px;
+  }
+  .action-btn {
+    width: 24px;
+    height: 24px;
+    font-size: 0.8rem;
+  }
+}
