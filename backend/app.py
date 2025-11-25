@@ -13,7 +13,11 @@ from auth_routes import auth_bp
 load_dotenv()
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler('app.log') if os.getenv('FLASK_ENV') != 'production' else logging.StreamHandler()
+    ]
 )
 logger = logging.getLogger(__name__)
 def create_app():
@@ -24,6 +28,15 @@ def create_app():
     app.config['COMPRESS_MIMETYPES'] = ['application/json', 'text/html', 'text/css', 'application/javascript']
     app.config['COMPRESS_LEVEL'] = 6
     app.config['COMPRESS_MIN_SIZE'] = 500
+    
+    # Security headers
+    @app.after_request
+    def add_security_headers(response):
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['X-Frame-Options'] = 'DENY'
+        response.headers['X-XSS-Protection'] = '1; mode=block'
+        response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+        return response
     
     frontend_url = os.getenv('FRONTEND_URL', 'http://localhost:5173')
     
@@ -69,10 +82,20 @@ def create_app():
             return jsonify({
                 'message': 'Sentiment Chatbot API',
                 'version': '1.0.0',
+                'status': 'running',
                 'endpoints': {
                     'health': '/health',
-                    'api': '/api'
-                }
+                    'api': '/api',
+                    'auth': '/api/auth'
+                },
+                'features': [
+                    'Sentiment Analysis',
+                    'AI Chat',
+                    'Image Analysis',
+                    'Multi-language Support',
+                    'Response Caching',
+                    'Rate Limiting'
+                ]
             }), 200
             
     except Exception as e:

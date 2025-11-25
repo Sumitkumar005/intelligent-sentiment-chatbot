@@ -44,6 +44,22 @@ class DatabaseManager:
             )
         ''')
         
+        # Create indexes for better performance
+        cursor.execute('''
+            CREATE INDEX IF NOT EXISTS idx_conversations_user_id 
+            ON conversations(user_id)
+        ''')
+        
+        cursor.execute('''
+            CREATE INDEX IF NOT EXISTS idx_messages_conversation_id 
+            ON messages(conversation_id)
+        ''')
+        
+        cursor.execute('''
+            CREATE INDEX IF NOT EXISTS idx_messages_timestamp 
+            ON messages(timestamp)
+        ''')
+        
         conn.commit()
         conn.close()
     def create_conversation(self, user_id: int, title: str = None) -> str:

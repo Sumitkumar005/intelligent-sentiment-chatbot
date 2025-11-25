@@ -41,8 +41,31 @@ def create_conversation():
 def list_conversations():
     try:
         user_id = request.user_id
+        
+        # Pagination parameters
+        page = request.args.get('page', 1, type=int)
+        limit = request.args.get('limit', 20, type=int)
+        
+        # Limit max items per page
+        limit = min(limit, 100)
+        
         conversations = db.get_all_conversations(user_id)
-        return jsonify(conversations), 200
+        
+        # Calculate pagination
+        total = len(conversations)
+        start = (page - 1) * limit
+        end = start + limit
+        paginated = conversations[start:end]
+        
+        return jsonify({
+            'conversations': paginated,
+            'pagination': {
+                'page': page,
+                'limit': limit,
+                'total': total,
+                'pages': (total + limit - 1) // limit
+            }
+        }), 200
     except Exception as e:
         logger.error(f"Error listing conversations: {e}", exc_info=True)
         return jsonify({'error': 'Failed to retrieve conversations'}), 500
