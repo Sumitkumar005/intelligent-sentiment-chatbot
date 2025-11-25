@@ -1,7 +1,8 @@
 import os
 import logging
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
+from flask_compress import Compress
 from dotenv import load_dotenv
 from database import DatabaseManager
 from sentiment import SentimentAnalyzer
@@ -17,6 +18,13 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 def create_app():
     app = Flask(__name__)
+    
+    # Enable response compression
+    Compress(app)
+    app.config['COMPRESS_MIMETYPES'] = ['application/json', 'text/html', 'text/css', 'application/javascript']
+    app.config['COMPRESS_LEVEL'] = 6
+    app.config['COMPRESS_MIN_SIZE'] = 500
+    
     frontend_url = os.getenv('FRONTEND_URL', 'http://localhost:5173')
     
     # Allow multiple origins for CORS
@@ -45,6 +53,28 @@ def create_app():
         init_routes(db_manager, sentiment_analyzer, llm_service, vision_service)
         app.register_blueprint(api)
         app.register_blueprint(auth_bp)
+        
+        # Health check endpoint
+        @app.route('/health')
+        def health_check():
+            return jsonify({
+                'status': 'healthy',
+                'service': 'sentiment-chatbot',
+                'database': 'connected' if db_manager else 'disconnected'
+            }), 200
+        
+        # Root endpoint
+        @app.route('/')
+        def root():
+            return jsonify({
+                'message': 'Sentiment Chatbot API',
+                'version': '1.0.0',
+                'endpoints': {
+                    'health': '/health',
+                    'api': '/api'
+                }
+            }), 200
+            
     except Exception as e:
         raise
     return app

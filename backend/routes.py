@@ -4,6 +4,7 @@ from sentiment import SentimentAnalyzer
 from llm_service import GroqService
 from vision_service import VisionService
 from auth_middleware import authenticate
+from rate_limiter import rate_limit
 import logging
 logger = logging.getLogger(__name__)
 api = Blueprint('api', __name__, url_prefix='/api')
@@ -61,6 +62,7 @@ def get_conversation(conversation_id):
         return jsonify({'error': 'Failed to retrieve conversation'}), 500
 @api.route('/conversations/<conversation_id>/messages', methods=['POST'])
 @authenticate
+@rate_limit(max_requests=30, window=60)  # 30 messages per minute
 def send_message(conversation_id):
     try:
         user_id = request.user_id
