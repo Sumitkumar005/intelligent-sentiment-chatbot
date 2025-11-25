@@ -1,60 +1,71 @@
 import os
-import smtplib
+import base64
+import json
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import logging
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+
 logger = logging.getLogger(__name__)
+
 class EmailService:
     def __init__(self):
-        self.smtp_host = os.getenv('SMTP_HOST', 'smtp.gmail.com')
-        self.smtp_port = int(os.getenv('SMTP_PORT', 587))
-        self.smtp_user = os.getenv('SMTP_USER')
-        self.smtp_pass = os.getenv('SMTP_PASS')
-        self.email_sender = os.getenv('EMAIL_SENDER', self.smtp_user)
+        self.email_sender = os.getenv('EMAIL_SENDER', os.getenv('SMTP_USER'))
         self.is_development = os.getenv('FLASK_ENV') == 'development'
+        self.gmail_token = os.getenv('GMAIL_TOKEN')  # JSON string of token
+        self.service = None
+        
+        if self.gmail_token:
+            try:
+                token_data = json.loads(self.gmail_token)
+                creds = Credentials.from_authorized_user_info(token_data)
+                self.service = build('gmail', 'v1', credentials=creds)
+                logger.info("✅ Gmail API service initialized successfully")
+            except Exception as e:
+                logger.error(f"❌ Failed to initialize Gmail API: {e}")
+    
     def send_otp_email(self, to_email: str, otp: str, name: str = None) -> bool:
         try:
             logger.info(f"📧 Attempting to send OTP email to {to_email}")
-            logger.info(f"SMTP Config: host={self.smtp_host}, port={self.smtp_port}, user={self.smtp_user}, sender={self.email_sender}")
             
-            if not self.smtp_user or not self.smtp_pass:
-                logger.error("❌ SMTP credentials not configured!")
+            if not self.service:
+                logger.error("❌ Gmail API service not initialized!")
                 return False
             
             msg = MIMEMultipart('alternative')
             msg['Subject'] = 'Your Sentiment Chatbot Login Code'
             msg['From'] = self.email_sender
             msg['To'] = to_email
+            
             text_body = self._create_text_body(otp, name)
             html_body = self._create_html_body(otp, name)
+            
             part1 = MIMEText(text_body, 'plain')
             part2 = MIMEText(html_body, 'html')
             msg.attach(part1)
             msg.attach(part2)
             
-            logger.info(f"📧 Connecting to SMTP server...")
-            with smtplib.SMTP(self.smtp_host, self.smtp_port, timeout=30) as server:
-                server.set_debuglevel(1)  # Enable debug output
-                logger.info(f"📧 Starting TLS...")
-                server.starttls()
-                logger.info(f"📧 Logging in...")
-                server.login(self.smtp_user, self.smtp_pass)
-                logger.info(f"📧 Sending message...")
-                server.send_message(msg)
-                logger.info(f"✅ OTP email sent successfully to {to_email}")
-                return True
+            # Encode the message
+            raw_message = base64.urlsafe_b64encode(msg.as_bytes()).decode('utf-8')
+            message_body = {'raw': raw_message}
+            
+            # Send the message
+            logger.info(f"📧 Sending via Gmail API...")
+            self.service.users().messages().send(userId='me', body=message_body).execute()
+            logger.info(f"✅ OTP email sent successfully to {to_email}")
+            return True
                 
-        except smtplib.SMTPAuthenticationError as e:
-            logger.error(f"❌ SMTP Authentication failed: {e}")
-            return False
-        except smtplib.SMTPException as e:
-            logger.error(f"❌ SMTP error: {e}")
+        except HttpError as e:
+            logger.error(f"❌ Gmail API error: {e}")
             return False
         except Exception as e:
             logger.error(f"❌ Failed to send email to {to_email}: {e}")
             import traceback
             logger.error(traceback.format_exc())
             return False
+    
     def _create_text_body(self, otp: str, name: str = None) -> str:
         greeting = f"Hello {name}!" if name else "Hello!"
         return f"""

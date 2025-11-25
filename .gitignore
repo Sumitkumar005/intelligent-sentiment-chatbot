@@ -37,6 +37,10 @@ instance/
 .env.local
 .env.*.local
 
+# OAuth tokens and credentials
+token.json
+client_secret_*.json
+
 # IDEs and Editors
 .vscode/
 .idea/
