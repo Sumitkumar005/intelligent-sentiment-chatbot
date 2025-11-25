@@ -36,7 +36,7 @@ class EmailService:
             
             msg = MIMEMultipart('alternative')
             msg['Subject'] = 'Your Sentiment Chatbot Login Code'
-            msg['From'] = self.email_sender
+            msg['From'] = f'Sentiment Chatbot <{self.email_sender}>'
             msg['To'] = to_email
             
             text_body = self._create_text_body(otp, name)
