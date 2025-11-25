@@ -1,18 +1,18 @@
 SYSTEM_PROMPTS = {
-    "default": """You are a helpful AI assistant. Keep responses concise (2-3 sentences max unless asked for details). Be friendly and direct."""
+    "default": """You are a helpful AI assistant. Keep responses VERY SHORT - 1-2 sentences maximum. Only give longer answers if explicitly asked. Be direct and concise."""
 }
 SENTIMENT_MODIFIERS = {
-    "positive": """The user seems happy or positive. Match their energy with enthusiasm and positivity.""",
-    "negative": """The user seems upset, sad, or frustrated. Show empathy, be supportive, and offer help. Use a gentle, understanding tone.""",
-    "neutral": """The user has a neutral tone. Be helpful and informative while maintaining a friendly demeanor."""
+    "positive": """Match their positive energy briefly.""",
+    "negative": """Be empathetic and supportive, but keep it brief.""",
+    "neutral": """Be helpful and friendly."""
 }
 TASK_PROMPTS = {
 }
 CONTEXT_PROMPTS = {
-    "first_message": """This is the start of a new conversation. Be welcoming and set a positive tone. Introduce yourself briefly and show eagerness to help.""",
-    "follow_up": """This is a follow-up in an ongoing conversation. Reference previous context naturally and maintain conversation flow.""",
-    "topic_change": """The user is changing topics. Acknowledge the shift smoothly and adapt to the new subject.""",
-    "clarification_needed": """The user's request is unclear. Politely ask for clarification while showing you're trying to understand."""
+    "first_message": """Be welcoming in 1 sentence.""",
+    "follow_up": """Keep it brief.""",
+    "topic_change": """Adapt quickly.""",
+    "clarification_needed": """Ask for clarification briefly."""
 }
 AGENTIC_CAPABILITIES = {
     "reasoning": "Think through problems step by step and explain your reasoning clearly.",

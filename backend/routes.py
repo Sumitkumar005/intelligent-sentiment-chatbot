@@ -31,7 +31,10 @@ def create_conversation():
         }), 201
     except Exception as e:
         logger.error(f"Error creating conversation: {e}", exc_info=True)
-        return jsonify({'error': 'Failed to create conversation'}), 500
+        return jsonify({
+            'error': 'Failed to create conversation',
+            'details': str(e) if logger.level == logging.DEBUG else None
+        }), 500
 @api.route('/conversations', methods=['GET'])
 @authenticate
 def list_conversations():
@@ -40,6 +43,7 @@ def list_conversations():
         conversations = db.get_all_conversations(user_id)
         return jsonify(conversations), 200
     except Exception as e:
+        logger.error(f"Error listing conversations: {e}", exc_info=True)
         return jsonify({'error': 'Failed to retrieve conversations'}), 500
 @api.route('/conversations/<conversation_id>', methods=['GET'])
 @authenticate
@@ -53,18 +57,27 @@ def get_conversation(conversation_id):
             return jsonify({'error': 'Unauthorized access to conversation'}), 403
         return jsonify(conversation), 200
     except Exception as e:
+        logger.error(f"Error getting conversation: {e}", exc_info=True)
         return jsonify({'error': 'Failed to retrieve conversation'}), 500
 @api.route('/conversations/<conversation_id>/messages', methods=['POST'])
 @authenticate
 def send_message(conversation_id):
     try:
         user_id = request.user_id
+        
+        # Validate request
         if not request.json:
             return jsonify({'error': 'Request must be JSON'}), 400
         if 'message' not in request.json:
             return jsonify({'error': 'Missing required field: message'}), 400
+        
         user_message = request.json['message']
         image_data = request.json.get('image')
+        
+        # Validate message length
+        if user_message and len(user_message) > 5000:
+            return jsonify({'error': 'Message too long (max 5000 characters)'}), 400
+        
         if not user_message or not user_message.strip():
             if not image_data:
                 return jsonify({'error': 'Message cannot be empty'}), 400
@@ -117,7 +130,11 @@ def send_message(conversation_id):
             'bot_message': bot_response
         }), 200
     except Exception as e:
-        return jsonify({'error': 'Failed to process message'}), 500
+        logger.error(f"Error processing message: {e}", exc_info=True)
+        return jsonify({
+            'error': 'Failed to process message',
+            'message': 'Please try again or contact support if the issue persists'
+        }), 500
 @api.route('/conversations/<conversation_id>/sentiment', methods=['GET'])
 @authenticate
 def get_conversation_sentiment(conversation_id):
@@ -150,6 +167,7 @@ def get_conversation_sentiment(conversation_id):
             'message_sentiments': message_sentiments
         }), 200
     except Exception as e:
+        logger.error(f"Error analyzing sentiment: {e}", exc_info=True)
         return jsonify({'error': 'Failed to analyze conversation sentiment'}), 500
 @api.route('/conversations/<conversation_id>', methods=['DELETE'])
 @authenticate
@@ -170,6 +188,7 @@ def delete_conversation(conversation_id):
         else:
             return jsonify({'error': 'Failed to delete conversation'}), 500
     except Exception as e:
+        logger.error(f"Error deleting conversation: {e}", exc_info=True)
         return jsonify({'error': 'Failed to delete conversation'}), 500
 @api.errorhandler(404)
 def not_found(error):

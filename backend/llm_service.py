@@ -2,6 +2,8 @@ import os
 from groq import Groq
 from typing import List, Dict, Optional
 import logging
+import hashlib
+import time
 from prompts import (
     build_system_prompt,
     detect_task_type,
@@ -9,6 +11,12 @@ from prompts import (
     RESPONSE_TEMPLATES
 )
 logger = logging.getLogger(__name__)
+
+# Simple in-memory cache
+_response_cache = {}
+_cache_timestamps = {}
+CACHE_TTL = 3600  # 1 hour
+
 class GroqService:
     def __init__(self, api_key: str = None):
         if api_key is None:
@@ -20,6 +28,37 @@ class GroqService:
         self.enable_reasoning = True
         self.enable_task_detection = True
         self.enable_sentiment_adaptation = True
+        self.enable_cache = True
+    def _get_cache_key(self, user_message: str, user_sentiment: str = None) -> str:
+        """Generate cache key from message and sentiment"""
+        cache_str = f"{user_message.lower().strip()}_{user_sentiment or 'neutral'}"
+        return hashlib.md5(cache_str.encode()).hexdigest()
+    
+    def _get_cached_response(self, cache_key: str) -> Optional[str]:
+        """Get cached response if valid"""
+        if not self.enable_cache:
+            return None
+        
+        if cache_key in _response_cache:
+            timestamp = _cache_timestamps.get(cache_key, 0)
+            if time.time() - timestamp < CACHE_TTL:
+                logger.info(f"✅ Cache hit for key: {cache_key[:8]}...")
+                return _response_cache[cache_key]
+            else:
+                # Expired, remove from cache
+                del _response_cache[cache_key]
+                del _cache_timestamps[cache_key]
+        return None
+    
+    def _cache_response(self, cache_key: str, response: str):
+        """Cache a response"""
+        if not self.enable_cache:
+            return
+        
+        _response_cache[cache_key] = response
+        _cache_timestamps[cache_key] = time.time()
+        logger.info(f"💾 Cached response for key: {cache_key[:8]}...")
+    
     def generate_response(
         self,
         user_message: str,
@@ -29,6 +68,13 @@ class GroqService:
     ) -> str:
         if conversation_history is None:
             conversation_history = []
+        
+        # Check cache first
+        cache_key = self._get_cache_key(user_message, user_sentiment)
+        cached = self._get_cached_response(cache_key)
+        if cached:
+            return cached
+        
         try:
             task_type = None
             if self.enable_task_detection:
@@ -70,6 +116,10 @@ class GroqService:
             )
             bot_response = response.choices[0].message.content
             bot_response = self._post_process_response(bot_response, user_sentiment)
+            
+            # Cache the response
+            self._cache_response(cache_key, bot_response)
+            
             return bot_response
         except Exception as e:
             return self._handle_error(e)

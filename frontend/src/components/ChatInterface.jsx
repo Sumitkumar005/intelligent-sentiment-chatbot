@@ -219,6 +219,13 @@ const ChatInterface = ({ conversationId, user, onLogout, showSidebar, onToggleSi
       setError('No messages to analyze yet.');
       return;
     }
+    
+    // Toggle summary if already showing
+    if (showSummary) {
+      setShowSummary(false);
+      return;
+    }
+    
     setLoading(true);
     setError(null);
     try {
@@ -269,7 +276,7 @@ const ChatInterface = ({ conversationId, user, onLogout, showSidebar, onToggleSi
               onClick={handleLoadSummary}
               disabled={loading || messages.length === 0}
             >
-              {showSummary ? 'Refresh' : 'Summary'}
+              {showSummary ? 'Hide' : 'Summary'}
             </button>
             <div className="user-info">
               <img src="/user-avatar.png" alt="User" className="user-avatar" />
