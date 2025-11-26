@@ -112,7 +112,11 @@ def send_message(conversation_id):
             return jsonify({'error': 'Conversation not found'}), 404
         if conversation.get('user_id') != user_id:
             return jsonify({'error': 'Unauthorized access to conversation'}), 403
-        sentiment_result = sentiment_analyzer.analyze_message(user_message)
+        # Pass conversation history for context-aware sentiment analysis
+        sentiment_result = sentiment_analyzer.analyze_message(
+            user_message, 
+            conversation.get('messages', [])
+        )
         user_message_id = db.save_message(
             conversation_id=conversation_id,
             sender='user',

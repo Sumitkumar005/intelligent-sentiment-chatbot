@@ -1,20 +1,71 @@
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-from typing import Dict, List
+from typing import Dict, List, Optional
 import logging
 logger = logging.getLogger(__name__)
 class SentimentAnalyzer:
     def __init__(self):
         self.analyzer = SentimentIntensityAnalyzer()
-    def analyze_message(self, text: str) -> Dict:
+    def analyze_message(self, text: str, conversation_history: List[Dict] = None) -> Dict:
+        """
+        Context-aware sentiment analysis
+        Considers conversation history to avoid misclassifying messages in emotional contexts
+        """
         try:
             scores = self.analyzer.polarity_scores(text)
             compound = scores['compound']
-            if compound >= 0.05:
-                sentiment = 'positive'
-            elif compound <= -0.05:
-                sentiment = 'negative'
+            
+            # Check conversation context for ongoing emotional topics
+            ongoing_negative_context = False
+            if conversation_history:
+                # Check last 5 messages for emotional keywords
+                recent_messages = conversation_history[-5:]
+                sad_keywords = [
+                    'breakup', 'break up', 'broke up', 'died', 'death', 'sad', 
+                    'cry', 'crying', 'devastated', 'hurt', 'hurting', 'pain', 
+                    'painful', 'depressed', 'lonely', 'heartbroken', 'grief',
+                    'miss her', 'miss him', 'lost', 'divorce', 'separated'
+                ]
+                
+                for msg in recent_messages:
+                    if msg.get('sender') == 'user':
+                        msg_text = msg.get('message_text', '').lower()
+                        if any(keyword in msg_text for keyword in sad_keywords):
+                            ongoing_negative_context = True
+                            break
+            
+            # CRITICAL FIX: Override sentiment if in negative context
+            # Example: "Her name was Sarah" after breakup should be negative, not positive
+            if ongoing_negative_context:
+                # If message is neutral or slightly positive but we're in sad context
+                if compound > -0.3:  # Not strongly positive
+                    # Check if message is actually trying to be positive
+                    positive_indicators = [
+                        'happy', 'great', 'wonderful', 'excited', 'better', 
+                        'good', 'ready', 'moving on', 'feeling better'
+                    ]
+                    is_genuinely_positive = any(word in text.lower() for word in positive_indicators)
+                    
+                    if not is_genuinely_positive:
+                        # Force negative/neutral for context continuity
+                        compound = -0.15
+                        sentiment = 'negative'
+                    else:
+                        # User is genuinely trying to be positive
+                        if compound >= 0.05:
+                            sentiment = 'positive'
+                        else:
+                            sentiment = 'neutral'
+                else:
+                    sentiment = 'negative'
             else:
-                sentiment = 'neutral'
+                # Normal classification when no negative context
+                if compound >= 0.05:
+                    sentiment = 'positive'
+                elif compound <= -0.05:
+                    sentiment = 'negative'
+                else:
+                    sentiment = 'neutral'
+            
             confidence = abs(compound)
             return {
                 'sentiment': sentiment,
@@ -23,6 +74,7 @@ class SentimentAnalyzer:
                 'compound_score': compound
             }
         except Exception as e:
+            logger.error(f"Sentiment analysis error: {e}")
             return {
                 'sentiment': 'neutral',
                 'score': 0.0,
