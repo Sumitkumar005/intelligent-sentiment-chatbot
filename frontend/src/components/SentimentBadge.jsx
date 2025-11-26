@@ -8,13 +8,13 @@ const SentimentBadge = ({ sentiment }) => {
         return {
           className: 'sentiment-badge-positive',
           icon: '😊',
-          label: 'Positive',
+          label: 'Happy',
         };
       case 'negative':
         return {
           className: 'sentiment-badge-negative',
-          icon: '😞',
-          label: 'Negative',
+          icon: '😢',
+          label: 'Sad',
         };
       case 'neutral':
         return {

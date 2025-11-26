@@ -124,16 +124,17 @@ class GroqService:
         except Exception as e:
             return self._handle_error(e)
     def _get_max_tokens(self, task_type: str, user_message: str) -> int:
-        if task_type in ['debugging', 'technical_explanation', 'math_help', 'data_analysis']:
+        # Emotional support needs more tokens for empathetic responses
+        if task_type in ['emotional_support', 'health_wellness']:
+            return 200
+        elif task_type in ['debugging', 'technical_explanation', 'math_help', 'data_analysis']:
             return 250
         elif task_type in ['code_help', 'learning_tutor', 'problem_solving', 'business_strategy']:
             return 150
         elif task_type in ['creative_writing', 'brainstorming', 'career_advice']:
             return 120
-        elif task_type in ['emotional_support', 'health_wellness']:
-            return 100
         else:
-            return 80
+            return 100
     def _get_temperature(self, task_type: str) -> float:
         if task_type in ['creative_writing', 'brainstorming']:
             return 0.9
