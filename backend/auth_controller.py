@@ -175,6 +175,7 @@ def generate_token(user: User) -> str:
         'exp': datetime.utcnow() + timedelta(seconds=expires_seconds)
     }
     token = jwt.encode(token_payload, jwt_secret, algorithm='HS256')
+    logger.info(f"🔑 Generated token for user {user.id} (email: {user.email})")
     return token
 def get_current_user(user_id: str):
     try:

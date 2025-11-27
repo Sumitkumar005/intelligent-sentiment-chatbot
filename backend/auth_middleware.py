@@ -28,21 +28,25 @@ def authenticate(f):
             request.user_id = payload['userId']
             request.user_email = payload['email']
             request.user_type = payload.get('type', 'user')
+            logger.info(f"✅ Token validated for user: {payload['userId']}")
             user = user_db.get_user_by_id(payload['userId'])
             if user:
                 request.user_data = user
             return f(*args, **kwargs)
         except jwt.ExpiredSignatureError:
+            logger.warning(f"❌ Expired token")
             return jsonify({
                 'success': False,
                 'message': 'Token has expired. Please login again.'
             }), 401
         except jwt.InvalidTokenError as e:
+            logger.warning(f"❌ Invalid token: {str(e)}")
             return jsonify({
                 'success': False,
                 'message': 'Invalid token. Please login again.'
             }), 401
         except Exception as e:
+            logger.error(f"❌ Auth error: {str(e)}", exc_info=True)
             return jsonify({
                 'success': False,
                 'message': 'Authentication failed'
