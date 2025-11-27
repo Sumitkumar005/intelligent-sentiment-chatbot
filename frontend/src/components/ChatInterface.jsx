@@ -45,7 +45,9 @@ const ChatInterface = ({ conversationId, user, onLogout, showSidebar, onToggleSi
     scrollToBottom();
   }, [messages]);
   useEffect(() => {
-    loadConversationHistory();
+    if (conversationId) {
+      loadConversationHistory();
+    }
   }, [conversationId]);
   useEffect(() => {
     if (!loadingHistory) {
