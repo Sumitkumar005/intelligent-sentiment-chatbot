@@ -8,15 +8,26 @@ from dotenv import load_dotenv
 # Load environment variables first
 load_dotenv()
 
+# Configure logging first
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
 # Determine which database to use
 DATABASE_URL = os.getenv('DATABASE_URL')
 if DATABASE_URL:
-    logger = logging.getLogger(__name__)
-    logger.info("🐘 Using PostgreSQL database")
-    from database_postgres import PostgresDatabase as DatabaseManager
+    try:
+        logger.info("🐘 Attempting to use PostgreSQL database")
+        from database_postgres import PostgresDatabase as DatabaseManager
+        logger.info("✅ PostgreSQL module loaded successfully")
+    except ImportError as e:
+        logger.warning(f"⚠️ PostgreSQL import failed: {e}")
+        logger.info("📁 Falling back to SQLite database")
+        from database import DatabaseManager
 else:
-    logger = logging.getLogger(__name__)
-    logger.info("📁 Using SQLite database")
+    logger.info("📁 Using SQLite database (no DATABASE_URL set)")
     from database import DatabaseManager
 
 from sentiment import SentimentAnalyzer
