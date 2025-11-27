@@ -49,6 +49,10 @@ function App() {
     }
   };
   const handleLoginSuccess = (token, userData) => {
+    // Store token and user first
+    localStorage.setItem('authToken', token);
+    localStorage.setItem('user', JSON.stringify(userData));
+    
     setIsAuthenticated(true);
     setUser(userData);
     initConversation();
