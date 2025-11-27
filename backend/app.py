@@ -4,13 +4,26 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_compress import Compress
 from dotenv import load_dotenv
-from database import DatabaseManager
+
+# Load environment variables first
+load_dotenv()
+
+# Determine which database to use
+DATABASE_URL = os.getenv('DATABASE_URL')
+if DATABASE_URL:
+    logger = logging.getLogger(__name__)
+    logger.info("🐘 Using PostgreSQL database")
+    from database_postgres import PostgresDatabase as DatabaseManager
+else:
+    logger = logging.getLogger(__name__)
+    logger.info("📁 Using SQLite database")
+    from database import DatabaseManager
+
 from sentiment import SentimentAnalyzer
 from llm_service import GroqService
 from vision_service import VisionService
 from routes import api, init_routes
 from auth_routes import auth_bp
-load_dotenv()
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
