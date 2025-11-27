@@ -35,6 +35,7 @@ from llm_service import GroqService
 from vision_service import VisionService
 from routes import api, init_routes
 from auth_routes import auth_bp
+from auth_middleware import authenticate
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -98,6 +99,17 @@ def create_app():
                 'status': 'healthy',
                 'service': 'sentiment-chatbot',
                 'database': 'connected' if db_manager else 'disconnected'
+            }), 200
+        
+        # Debug endpoint to test auth
+        @app.route('/api/debug/auth', methods=['GET'])
+        @authenticate
+        def debug_auth():
+            return jsonify({
+                'success': True,
+                'message': 'Authentication working!',
+                'user_id': request.user_id,
+                'user_email': request.user_email
             }), 200
         
         # Root endpoint

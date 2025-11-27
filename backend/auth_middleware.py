@@ -3,8 +3,23 @@ import jwt
 from flask import request, jsonify
 from functools import wraps
 import logging
-from user_database import UserDatabaseManager
+
 logger = logging.getLogger(__name__)
+
+# Determine which user database to use
+DATABASE_URL = os.getenv('DATABASE_URL')
+if DATABASE_URL:
+    try:
+        logger.info("🐘 Using PostgreSQL for user database in middleware")
+        from user_database_postgres import UserDatabaseManager
+    except ImportError as e:
+        logger.warning(f"⚠️ PostgreSQL user database import failed: {e}")
+        logger.info("📁 Falling back to SQLite for user database")
+        from user_database import UserDatabaseManager
+else:
+    logger.info("📁 Using SQLite for user database in middleware")
+    from user_database import UserDatabaseManager
+
 user_db = UserDatabaseManager()
 def authenticate(f):
     @wraps(f)
