@@ -8,7 +8,7 @@
 
 ---
 
-## 📋 Assignment Completion Status
+## 📋 Completion Status
 
 ### ✅ Tier 1 - Mandatory (Complete)
 - **Conversation-Level Sentiment Analysis**: Full conversation history maintained with overall sentiment evaluation
@@ -224,8 +224,6 @@ This project includes full Docker support for easy deployment:
 - **backend/Dockerfile** - Backendiner configuration
 - **frontend/Dockerfile** - Frontend container with Nginx
 - **DOCKER_DEPLOYMENT.md** - Complete deploymentfor ACP, Azure, Digit
-├── backend/
-│*Deploy   ├──ere with Docker:**
 - AWS ECS/EC2
 - Google Cloud Run/GKE
 - Azure Container Instances
@@ -270,8 +268,6 @@ sentiment-chatbot/int
 ├── .dockerignore                 # Docker ignore patterns
 ├── DOCKER_DEPLOYMENT.md          # Docker deployment guide
 ├── DEPLOYMENT.md                 # General deployment guide
-├── ASSIGNMENT_CHECKLIST.md       # Assignment completion status
-├── SUBMISSION_SUMMARY.md         # Submission details
 ``` README.md                     # This file
 
 ---
@@ -537,7 +533,7 @@ Response: {
 
 ---
 
-## 🎯 Assignment Deliverables
+## 🎯 features
 
 ✅ **Source Code**: Complete, modular, production-ready  
 ✅ **README**: Comprehensive documentation (this file)  
@@ -550,7 +546,6 @@ Response: {
 
 ## 🙏 Acknowledgments
 
-- **LiaPlus AI** - For the opportunity and clear assignment guidelines
 - **Groq** - For excellent LLM API with fast inference
 - **VADER** - For robust sentiment analysis
 - **React & Flask** - For solid frameworks
