@@ -55,7 +55,11 @@ function App() {
     
     setIsAuthenticated(true);
     setUser(userData);
-    initConversation();
+    
+    // Add small delay to ensure localStorage is written
+    setTimeout(() => {
+      initConversation();
+    }, 100);
   };
   const handleLogout = () => {
     localStorage.removeItem('authToken');
