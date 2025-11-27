@@ -52,7 +52,7 @@ export const getConversationSentiment = async (conversationId) => {
 };
 export const getAllConversations = async () => {
   const response = await api.get('/conversations');
-  return response.data;
+  return response.data.conversations || response.data;
 };
 export const deleteConversation = async (conversationId) => {
   const response = await api.delete(`/conversations/${conversationId}`);
