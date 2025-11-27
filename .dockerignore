@@ -1,0 +1,44 @@
+# Git
+.git/
+.gitignore
+
+# Documentation
+*.md
+docs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Logs
+*.log
+
+# Database
+*.db
+*.sqlite
+
+# Node modules (will be installed in container)
+node_modules/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Build artifacts
+dist/
+build/
+
+# Credentials
+token.json
+client_secret*.json
