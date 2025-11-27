@@ -6,9 +6,24 @@ import jwt
 import logging
 from threading import Thread
 from models.User import User
-from user_database import UserDatabaseManager
 from email_service import EmailService
+
 logger = logging.getLogger(__name__)
+
+# Determine which user database to use
+DATABASE_URL = os.getenv('DATABASE_URL')
+if DATABASE_URL:
+    try:
+        logger.info("🐘 Using PostgreSQL for user database")
+        from user_database_postgres import UserDatabaseManager
+    except ImportError as e:
+        logger.warning(f"⚠️ PostgreSQL user database import failed: {e}")
+        logger.info("📁 Falling back to SQLite for user database")
+        from user_database import UserDatabaseManager
+else:
+    logger.info("📁 Using SQLite for user database")
+    from user_database import UserDatabaseManager
+
 user_db = UserDatabaseManager()
 email_service = EmailService()
 def check_email(data: dict):

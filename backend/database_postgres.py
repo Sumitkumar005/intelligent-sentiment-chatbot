@@ -34,21 +34,14 @@ class PostgresDatabase:
         cursor = conn.cursor()
         
         try:
-            # Create users table
-            cursor.execute('''
-                CREATE TABLE IF NOT EXISTS users (
-                    id SERIAL PRIMARY KEY,
-                    email VARCHAR(255) UNIQUE NOT NULL,
-                    name VARCHAR(255),
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            ''')
+            # Note: Users table is managed by user_database_postgres.py
+            # Just create conversations and messages tables here
             
             # Create conversations table
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS conversations (
                     id SERIAL PRIMARY KEY,
-                    user_id INTEGER REFERENCES users(id),
+                    user_id VARCHAR(255),
                     title VARCHAR(500),
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     overall_sentiment VARCHAR(50),
@@ -73,7 +66,6 @@ class PostgresDatabase:
             # Create indexes for better performance
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_conversations_user_id ON conversations(user_id)')
             cursor.execute('CREATE INDEX IF NOT EXISTS idx_messages_conversation_id ON messages(conversation_id)')
-            cursor.execute('CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)')
             
             conn.commit()
             logger.info("✅ Database tables created/verified")
@@ -86,7 +78,7 @@ class PostgresDatabase:
             cursor.close()
             conn.close()
     
-    def create_conversation(self, user_id: int, title: str = None) -> str:
+    def create_conversation(self, user_id: str, title: str = None) -> str:
         """Create a new conversation (returns string ID to match SQLite interface)"""
         conn = self.get_connection()
         cursor = conn.cursor()
@@ -177,7 +169,7 @@ class PostgresDatabase:
             cursor.close()
             conn.close()
     
-    def get_all_conversations(self, user_id: int = None) -> List[Dict]:
+    def get_all_conversations(self, user_id: str = None) -> List[Dict]:
         """Get all conversations for a user"""
         conn = self.get_connection()
         cursor = conn.cursor()
