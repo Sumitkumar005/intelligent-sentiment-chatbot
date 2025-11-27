@@ -156,6 +156,14 @@ class PostgresDatabase:
             
             messages = cursor.fetchall()
             
+            # Convert message timestamps to ISO format
+            formatted_messages = []
+            for msg in messages:
+                msg_dict = dict(msg)
+                if msg_dict.get('timestamp'):
+                    msg_dict['timestamp'] = msg_dict['timestamp'].isoformat()
+                formatted_messages.append(msg_dict)
+            
             return {
                 'conversation_id': str(conversation['id']),
                 'user_id': conversation['user_id'],
@@ -163,7 +171,7 @@ class PostgresDatabase:
                 'created_at': conversation['created_at'].isoformat() if conversation['created_at'] else None,
                 'overall_sentiment': conversation['overall_sentiment'],
                 'sentiment_explanation': conversation['sentiment_explanation'],
-                'messages': [dict(msg) for msg in messages]
+                'messages': formatted_messages
             }
         finally:
             cursor.close()

@@ -31,14 +31,17 @@ class UserDatabaseManager:
         cursor = conn.cursor()
         
         try:
+            # Drop and recreate users table to fix data type issues
+            cursor.execute('DROP TABLE IF EXISTS users CASCADE')
+            
             cursor.execute('''
-                CREATE TABLE IF NOT EXISTS users (
+                CREATE TABLE users (
                     id VARCHAR(255) PRIMARY KEY,
                     email VARCHAR(255) UNIQUE NOT NULL,
                     name VARCHAR(255),
                     otp VARCHAR(10),
                     otp_expires_at TIMESTAMP,
-                    email_verified BOOLEAN DEFAULT FALSE,
+                    email_verified INTEGER DEFAULT 0,
                     status VARCHAR(50) DEFAULT 'active',
                     type VARCHAR(50) DEFAULT 'user',
                     created_at TIMESTAMP NOT NULL
@@ -71,7 +74,7 @@ class UserDatabaseManager:
                 user.name,
                 user.otp,
                 user.otp_expires_at,
-                user.email_verified,
+                1 if user.email_verified else 0,  # Convert boolean to integer
                 user.status,
                 user.type,
                 user.created_at
@@ -158,7 +161,7 @@ class UserDatabaseManager:
         
         try:
             cursor.execute('''
-                UPDATE users SET email_verified = TRUE WHERE id = %s
+                UPDATE users SET email_verified = 1 WHERE id = %s
             ''', (user_id,))
             conn.commit()
         except Exception as e:

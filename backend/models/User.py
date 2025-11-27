@@ -46,14 +46,24 @@ class User:
         }
     @staticmethod
     def from_dict(data: dict):
+        # Handle both string (SQLite) and datetime (PostgreSQL) formats
+        def parse_datetime(value):
+            if value is None:
+                return None
+            if isinstance(value, datetime):
+                return value
+            if isinstance(value, str):
+                return datetime.fromisoformat(value)
+            return None
+        
         return User(
             email=data['email'],
             name=data.get('name'),
             user_id=data.get('id'),
             otp=data.get('otp'),
-            otp_expires_at=datetime.fromisoformat(data['otp_expires_at']) if data.get('otp_expires_at') else None,
+            otp_expires_at=parse_datetime(data.get('otp_expires_at')),
             email_verified=bool(data.get('email_verified', 0)),
             status=data.get('status', 'active'),
             user_type=data.get('type', 'user'),
-            created_at=datetime.fromisoformat(data['created_at']) if data.get('created_at') else None
+            created_at=parse_datetime(data.get('created_at'))
         )
