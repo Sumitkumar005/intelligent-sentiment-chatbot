@@ -163,6 +163,10 @@ FLASK_PORT=5000
 
 ## 📖 Usage Guide
 
+### Login Screen
+
+![Login Page](frontend/public/loginpage.png)
+
 ### Testing the Live Demo
 
 **⏰ Important:** The deployed app on Render's free tier takes **15-20 seconds to wake up** on first visit. Please be patient!

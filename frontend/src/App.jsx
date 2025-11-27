@@ -93,8 +93,18 @@ function App() {
   if (loading) {
     return (
       <div className="app-loading">
-        <div className="loading-spinner-large">⏳</div>
-        <p>Initializing chat...</p>
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline
+          className="loading-animation"
+          style={{ width: '200px', height: '200px', marginBottom: '20px' }}
+        >
+          <source src="/loading-animation.mp4" type="video/mp4" />
+        </video>
+        <p>Waking up the server... This may take 15-20 seconds ⏳</p>
+        <p className="loading-hint">Please be patient, we're on free tier 😊</p>
       </div>
     );
   }

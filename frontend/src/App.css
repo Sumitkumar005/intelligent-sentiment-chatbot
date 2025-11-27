@@ -36,8 +36,10 @@ body.dark-mode {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #f8f9fa;
-  color: #495057;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  color: white;
+  padding: 20px;
+  text-align: center;
 }
 .loading-spinner-large {
   font-size: 3rem;
@@ -53,8 +55,36 @@ body.dark-mode {
   }
 }
 .app-loading p {
-  font-size: 1.1rem;
-  color: #6c757d;
+  font-size: 1.2rem;
+  color: white;
+  margin: 10px 0;
+  font-weight: 500;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.app-loading .loading-hint {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-style: italic;
+  margin-top: 5px;
+}
+
+.loading-animation {
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 10px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 .error-icon-large {
   font-size: 4rem;
